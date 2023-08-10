@@ -31,7 +31,7 @@ func (o *OpenAPI) Parse(ctx context.Context) {
 	for _, pathItem := range doc.Paths.InMatchingOrder() {
 		oprs := doc.Paths.Find(pathItem).Operations()
 
-		var paths []Path
+		var paths []Method
 
 		for mtd, opr := range oprs {
 			var params openapi3.Parameters
@@ -49,7 +49,7 @@ func (o *OpenAPI) Parse(ctx context.Context) {
 				}
 			}
 
-			path := Path{
+			path := Method{
 				method: mtd,
 				params: params,
 				bodys:  bodys,
