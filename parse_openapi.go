@@ -31,8 +31,30 @@ func (o *OpenAPI) Parse(ctx context.Context) {
 	for _, pathItem := range doc.Paths.InMatchingOrder() {
 		oprs := doc.Paths.Find(pathItem).Operations()
 
+		var paths []Path
+
 		for mtd, opr := range oprs {
-			fmt.Println(mtd, opr)
+			var params openapi3.Parameters
+			var bodys []*openapi3.SchemaRef
+
+			if opr.Parameters != nil {
+				for _, param := range opr.Parameters {
+					params = append(params, param)
+				}
+			}
+
+			if opr.RequestBody != nil {
+				for _, param := range opr.RequestBody.Value.Content["application/json"].Schema.Value.Properties {
+					bodys = append(bodys, param)
+				}
+			}
+
+			path := Path{
+				method: mtd,
+				params: params,
+				bodys:  bodys,
+			}
+			paths = append(paths, path)
 		}
 	}
 }
