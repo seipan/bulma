@@ -21,17 +21,19 @@ func (o *OpenAPI) Pass() string {
 	return o.pass
 }
 
-func (o *OpenAPI) Parse(ctx context.Context) {
+func (o *OpenAPI) Parse(ctx context.Context) []Path {
 	doc, err := openapi3.NewLoader().LoadFromFile(o.Pass())
 	if err != nil {
 		fmt.Println(err)
 	}
 
+	var paths []Path
+
 	_ = doc.Validate(ctx)
 	for _, pathItem := range doc.Paths.InMatchingOrder() {
 		oprs := doc.Paths.Find(pathItem).Operations()
 
-		var paths []Method
+		var mtds []Method
 
 		for mtd, opr := range oprs {
 			var params openapi3.Parameters
@@ -54,7 +56,15 @@ func (o *OpenAPI) Parse(ctx context.Context) {
 				params: params,
 				bodys:  bodys,
 			}
-			paths = append(paths, path)
+			mtds = append(mtds, path)
 		}
+
+		path := Path{
+			path:   pathItem,
+			method: mtds,
+		}
+		paths = append(paths, path)
+
 	}
+	return paths
 }
