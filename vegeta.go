@@ -14,8 +14,8 @@ type Attacker struct {
 
 func (atk *Attacker) Attack() {
 	target := vegeta.Target{
-		Method: "GET",
-		URL:    "https://example.com/api/endpoint",
+		Method: atk.path.method[0].method,
+		URL:    atk.path.path,
 	}
 	targeter := vegeta.NewStaticTargeter(target)
 	rate := vegeta.Rate{Freq: 100, Per: time.Second}
