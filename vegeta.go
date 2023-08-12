@@ -9,12 +9,13 @@ import (
 )
 
 type Attacker struct {
-	path Path
+	path  Path
+	index int
 }
 
 func (atk *Attacker) Attack() {
 	target := vegeta.Target{
-		Method: atk.path.method[0].method,
+		Method: atk.path.method[atk.index].method,
 		URL:    atk.path.path,
 	}
 	targeter := vegeta.NewStaticTargeter(target)
