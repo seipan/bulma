@@ -1,6 +1,10 @@
 package bluma
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+)
 
 func TestAttack(t *testing.T) {
 	t.Run("Attack", func(t *testing.T) {
@@ -18,6 +22,6 @@ func TestAttack(t *testing.T) {
 			frequency:   10,
 			duration:    1,
 		}
-		atk.Attack()
+		assert.NotPanics(t, atk.Attack)
 	})
 }
