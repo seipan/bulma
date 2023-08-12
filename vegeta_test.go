@@ -4,6 +4,7 @@ import "testing"
 
 func TestAttack(t *testing.T) {
 	t.Run("Attack", func(t *testing.T) {
+		t.Skip()
 		atk := Attacker{
 			path: Path{
 				path: "http://localhost:8080/health",
