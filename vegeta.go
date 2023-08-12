@@ -2,6 +2,7 @@ package bluma
 
 import (
 	"fmt"
+	"net/http"
 	"os"
 	"time"
 
@@ -11,6 +12,8 @@ import (
 type Attacker struct {
 	path        Path
 	methodIndex int
+	body        []byte
+	header      http.Header
 	frequency   int
 	duration    time.Duration
 }
@@ -19,6 +22,8 @@ func (atk *Attacker) Attack() {
 	target := vegeta.Target{
 		Method: atk.path.method[atk.methodIndex].method,
 		URL:    atk.path.path,
+		Body:   atk.body,
+		Header: atk.header,
 	}
 	targeter := vegeta.NewStaticTargeter(target)
 	rate := vegeta.Rate{Freq: atk.frequency, Per: time.Second}
