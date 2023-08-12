@@ -11,6 +11,8 @@ import (
 type Attacker struct {
 	path        Path
 	methodIndex int
+	frequency   int
+	duration    time.Duration
 }
 
 func (atk *Attacker) Attack() {
@@ -19,8 +21,7 @@ func (atk *Attacker) Attack() {
 		URL:    atk.path.path,
 	}
 	targeter := vegeta.NewStaticTargeter(target)
-	rate := vegeta.Rate{Freq: 100, Per: time.Second}
-	duration := 10 * time.Second
+	rate := vegeta.Rate{Freq: atk.frequency, Per: time.Second}
 
 	attacker := vegeta.NewAttacker()
 
@@ -28,7 +29,7 @@ func (atk *Attacker) Attack() {
 	var results vegeta.Results
 	reporter := vegeta.NewJSONReporter(&metrics)
 
-	for res := range attacker.Attack(targeter, rate, duration, "Vegeta Load Testing") {
+	for res := range attacker.Attack(targeter, rate, atk.duration, "Vegeta Load Testing") {
 		results.Add(res)
 	}
 	results.Close()
