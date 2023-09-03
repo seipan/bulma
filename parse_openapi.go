@@ -21,10 +21,10 @@ func (o *OpenAPI) Pass() string {
 	return o.pass
 }
 
-func (o *OpenAPI) Parse(ctx context.Context) []Path {
+func (o *OpenAPI) Parse(ctx context.Context) ([]Path, error) {
 	doc, err := openapi3.NewLoader().LoadFromFile(o.Pass())
 	if err != nil {
-		fmt.Println(err)
+		return nil, fmt.Errorf("failed to load openapi.yaml: %w", err)
 	}
 
 	var paths []Path
@@ -40,9 +40,7 @@ func (o *OpenAPI) Parse(ctx context.Context) []Path {
 			var bodys []*openapi3.SchemaRef
 
 			if opr.Parameters != nil {
-				for _, param := range opr.Parameters {
-					params = append(params, param)
-				}
+				params = append(params, opr.Parameters...)
 			}
 
 			if opr.RequestBody != nil {
@@ -66,5 +64,5 @@ func (o *OpenAPI) Parse(ctx context.Context) []Path {
 		paths = append(paths, path)
 
 	}
-	return paths
+	return paths, nil
 }
