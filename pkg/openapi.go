@@ -1,4 +1,4 @@
-package bluma
+package pkg
 
 import "github.com/getkin/kin-openapi/openapi3"
 

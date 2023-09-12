@@ -1,4 +1,4 @@
-package bluma
+package pkg
 
 import (
 	"net/http"
