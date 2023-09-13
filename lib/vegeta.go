@@ -6,10 +6,10 @@ import (
 )
 
 type Attacker struct {
-	path        Path
-	methodIndex int
-	body        []byte
-	header      http.Header
-	frequency   int
-	duration    time.Duration
+	Path        Path
+	MethodIndex int
+	Body        []byte
+	Header      http.Header
+	Frequency   int
+	Duration    time.Duration
 }

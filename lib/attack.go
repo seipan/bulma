@@ -10,13 +10,13 @@ import (
 
 func (atk *Attacker) Attack() {
 	target := vegeta.Target{
-		Method: atk.path.method[atk.methodIndex].method,
-		URL:    atk.path.path,
-		Body:   atk.body,
-		Header: atk.header,
+		Method: atk.Path.method[atk.MethodIndex].method,
+		URL:    atk.Path.path,
+		Body:   atk.Body,
+		Header: atk.Header,
 	}
 	targeter := vegeta.NewStaticTargeter(target)
-	rate := vegeta.Rate{Freq: atk.frequency, Per: time.Second}
+	rate := vegeta.Rate{Freq: atk.Frequency, Per: time.Second}
 
 	attacker := vegeta.NewAttacker()
 
@@ -24,7 +24,7 @@ func (atk *Attacker) Attack() {
 	var results vegeta.Results
 	reporter := vegeta.NewJSONReporter(&metrics)
 
-	for res := range attacker.Attack(targeter, rate, atk.duration, "Vegeta Load Testing") {
+	for res := range attacker.Attack(targeter, rate, atk.Duration, "Vegeta Load Testing") {
 		results.Add(res)
 	}
 	results.Close()
