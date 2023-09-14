@@ -1,4 +1,4 @@
-module github.com/seipan/bluma
+module github.com/seipan/bulma
 
 go 1.20
 

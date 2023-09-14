@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/seipan/bluma/lib"
+	"github.com/seipan/bulma/lib"
 )
 
 func ParseAndAttack(ctx context.Context, path string) error {
