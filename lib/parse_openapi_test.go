@@ -35,7 +35,14 @@ func TestParseOpenAPI(t *testing.T) {
 		res, err := o.Parse(context.Background())
 		assert.NoError(t, err)
 
-		assert.Equal(t, "GET", res[0].method[0].method)
 		assert.Equal(t, "/pets", res[0].Path())
+
+		assert.Equal(t, "GET", res[0].method[0].method)
+		assert.Equal(t, "POST", res[0].method[1].method)
+
+		assert.Equal(t, "/pets/{id}", res[1].Path())
+
+		assert.Equal(t, "DELETE", res[1].method[0].method)
+		assert.Equal(t, "GET", res[1].method[1].method)
 	})
 }
