@@ -24,6 +24,7 @@ package lib
 
 import (
 	"context"
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -39,6 +40,10 @@ func TestParseOpenAPI(t *testing.T) {
 
 		assert.Equal(t, "GET", res[0].method[0].method)
 		assert.Equal(t, "POST", res[0].method[1].method)
+		if res[0].method[1].bodys != nil {
+			by, _ := res[0].method[1].bodys[0].MarshalJSON()
+			fmt.Println(string(by))
+		}
 
 		assert.Equal(t, "/pets/{id}", res[1].Path())
 
