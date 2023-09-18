@@ -41,13 +41,37 @@ func TestParseOpenAPI(t *testing.T) {
 		assert.Equal(t, "GET", res[0].method[0].method)
 		assert.Equal(t, "POST", res[0].method[1].method)
 		if res[0].method[1].bodys != nil {
-			by, _ := res[0].method[1].bodys[0].MarshalJSON()
-			fmt.Println(string(by))
+			by := res[1].method[1].bodys[1]
+			fmt.Println(by)
 		}
 
 		assert.Equal(t, "/pets/{id}", res[1].Path())
 
 		assert.Equal(t, "DELETE", res[1].method[0].method)
 		assert.Equal(t, "GET", res[1].method[1].method)
+	})
+}
+
+func TestParseOpenAPIYml(t *testing.T) {
+	t.Run("ParseOpenAPI", func(t *testing.T) {
+		o := NewOpenAPI("../testdata/openapi.yaml")
+		res, err := o.Parse(context.Background())
+		assert.NoError(t, err)
+
+		assert.Equal(t, "/users/me", res[0].Path())
+
+		assert.Equal(t, "GET", res[0].method[0].method)
+
+		assert.Equal(t, "/users", res[1].Path())
+		assert.Equal(t, "GET", res[1].method[0].method)
+		assert.Equal(t, "POST", res[1].method[1].method)
+		if res[1].method[1].bodys != nil {
+			by := res[1].method[1].bodys[0]
+			b, _ := by.shema.MarshalJSON()
+			fmt.Println(string(b))
+			fmt.Println(by.name)
+			fmt.Println(by.shema.Value.Example)
+		}
+
 	})
 }

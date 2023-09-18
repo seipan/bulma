@@ -59,15 +59,19 @@ func (o *OpenAPI) Parse(ctx context.Context) ([]Path, error) {
 
 		for mtd, opr := range oprs {
 			var params openapi3.Parameters
-			var bodys []*openapi3.SchemaRef
+			var bodys []Body
 
 			if opr.Parameters != nil {
 				params = append(params, opr.Parameters...)
 			}
 
 			if opr.RequestBody != nil {
-				for _, param := range opr.RequestBody.Value.Content["application/json"].Schema.Value.Properties {
-					bodys = append(bodys, param)
+				for name, param := range opr.RequestBody.Value.Content["application/json"].Schema.Value.Properties {
+					bodys = append(bodys,
+						Body{
+							name:  name,
+							shema: param,
+						})
 				}
 			}
 

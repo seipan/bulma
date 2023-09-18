@@ -24,10 +24,15 @@ package lib
 
 import "github.com/getkin/kin-openapi/openapi3"
 
+type Body struct {
+	name  string
+	shema *openapi3.SchemaRef
+}
+
 type Method struct {
 	method string
 	params openapi3.Parameters
-	bodys  []*openapi3.SchemaRef
+	bodys  []Body
 }
 
 func (m *Method) Method() string {
@@ -38,7 +43,7 @@ func (m *Method) Params() openapi3.Parameters {
 	return m.params
 }
 
-func (m *Method) Bodys() []*openapi3.SchemaRef {
+func (m *Method) Bodys() []Body {
 	return m.bodys
 }
 
