@@ -24,6 +24,7 @@ package cmd
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 
 	"github.com/seipan/bulma/lib"
@@ -55,4 +56,18 @@ func ParthOpenAPItoAttacker(pathes []lib.Path) ([]lib.Attacker, error) {
 		res = append(res, atk)
 	}
 	return res, nil
+}
+
+func createBody(bodys []lib.Body) (string, error) {
+	mp := make(map[string]interface{})
+	for _, body := range bodys {
+		mp[body.Name] = body.Shema.Value.Example
+	}
+	jsonData, err := json.Marshal(mp)
+	if err != nil {
+		return "", err
+	}
+
+	jsonString := string(jsonData)
+	return jsonString, nil
 }

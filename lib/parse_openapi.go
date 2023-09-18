@@ -69,8 +69,8 @@ func (o *OpenAPI) Parse(ctx context.Context) ([]Path, error) {
 				for name, param := range opr.RequestBody.Value.Content["application/json"].Schema.Value.Properties {
 					bodys = append(bodys,
 						Body{
-							name:  name,
-							shema: param,
+							Name:  name,
+							Shema: param,
 						})
 				}
 			}

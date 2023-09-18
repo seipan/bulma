@@ -67,10 +67,10 @@ func TestParseOpenAPIYml(t *testing.T) {
 		assert.Equal(t, "POST", res[1].method[1].method)
 		if res[1].method[1].bodys != nil {
 			by := res[1].method[1].bodys[0]
-			b, _ := by.shema.MarshalJSON()
+			b, _ := by.Shema.MarshalJSON()
 			fmt.Println(string(b))
-			fmt.Println(by.name)
-			fmt.Println(by.shema.Value.Example)
+			fmt.Println(by.Name)
+			fmt.Println(by.Shema.Value.Example)
 		}
 
 	})

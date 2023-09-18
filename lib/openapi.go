@@ -25,8 +25,8 @@ package lib
 import "github.com/getkin/kin-openapi/openapi3"
 
 type Body struct {
-	name  string
-	shema *openapi3.SchemaRef
+	Name  string
+	Shema *openapi3.SchemaRef
 }
 
 type Method struct {
