@@ -48,16 +48,9 @@ func ParseAndAttack(ctx context.Context, path string) error {
 func ParthOpenAPItoAttacker(pathes []lib.Path) ([]lib.Attacker, error) {
 	var res []lib.Attacker
 	for i, path := range pathes {
-		mtd := path.Method(i)
-		body := mtd.Bodys()
-		bodyjson, err := body[0].MarshalJSON()
-		if err != nil {
-			return nil, fmt.Errorf("failed to marshal json: %w", err)
-		}
 		atk := lib.Attacker{
 			Path:        path,
 			MethodIndex: i,
-			Body:        bodyjson,
 		}
 		res = append(res, atk)
 	}

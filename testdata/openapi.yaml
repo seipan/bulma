@@ -1,0 +1,527 @@
+openapi: "3.0.3"
+info:
+  title: "My API Spec"
+  description: |-
+    My Sampe API Specification.</br>
+    It works for me.
+  termsOfService: https://www.blog.danishi.net/about/
+  version: "1.0.0"
+  contact:
+    name: API Support
+    email: support@example.com
+    url: http://example.com/support
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+  - url: https://api.example.com/api/v1
+    description: production
+  - url: https://{environment}.api.example.com/api/v1
+    variables:
+      environment:
+        default: dev
+        enum:
+          - dev
+          - staging
+    description: develop
+  - url: "{protocol}://{host}:{port}/api/v1"
+    description: local
+    variables:
+      protocol:
+        enum:
+          - http
+          - https
+        default: http
+      host:
+        default: localhost
+      port:
+        enum:
+          - '443'
+          - '8443'
+        default: '443'
+tags:
+  - name: User
+    description: Access to user model.
+paths:
+  /users:
+    post:
+      tags:
+      - "User"
+      security:
+        - bearer: []
+      summary: CreateUser
+      description: |-
+        Create a user.
+      requestBody:
+        $ref: '#/components/requestBodies/CreateUserRequestBody'
+      responses:
+        '200':
+          $ref: '#/components/responses/CreateUserResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
+        '500':
+          $ref: '#/components/responses/InternalServerErrorResponse'
+    get:
+      tags:
+        - "User"
+      security:
+        - bearer: []
+      summary: GetUsers
+      description: |-
+        Search for a users and get a list.
+      parameters:
+        - in: query
+          name: email
+          description: User mail address.
+          schema:
+            type: string
+            format: email
+          example: John@example.com
+        - in: query
+          name: name
+          description: User name.
+          schema:
+            type: string
+          example: John Smith
+        - $ref: '#/components/parameters/LimitParameter'
+        - $ref: '#/components/parameters/OffsetParameter'
+      responses:
+        '200':
+          $ref: '#/components/responses/GetUsersResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
+        '500':
+          $ref: '#/components/responses/InternalServerErrorResponse'
+  /users/me:
+    get:
+      tags:
+        - "User"
+      summary: GetUserByMine
+      security:
+        - bearer: []
+      description: |-
+        Get user by logged in session.
+      responses:
+        '200':
+          $ref: '#/components/responses/GetUserResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '500':
+          $ref: '#/components/responses/InternalServerErrorResponse'
+  /users/{id}:
+    parameters:
+      - $ref: '#/components/parameters/UserIdParameter'
+    get:
+      tags:
+        - "User"
+      summary: GetUserById
+      security:
+        - bearer: []
+      description: |-
+        Get user by id.
+      responses:
+        '200':
+          $ref: '#/components/responses/GetUserResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '500':
+          $ref: '#/components/responses/InternalServerErrorResponse'
+    put:
+      tags:
+        - "User"
+      summary: UpdateUserById
+      security:
+        - bearer: []
+      description: |-
+        Update user by id.
+      parameters:
+        - $ref: '#/components/parameters/VersionParameter'
+      requestBody:
+        $ref: '#/components/requestBodies/UpdateUserRequestBody'
+      responses:
+        '200':
+          $ref: '#/components/responses/CreateUserResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '409':
+          $ref: '#/components/responses/ConflictErrorResponse'
+        '500':
+          $ref: '#/components/responses/InternalServerErrorResponse'
+    delete:
+      tags:
+        - "User"
+      summary: DeleteUserById
+      security:
+        - bearer: []
+      description: |-
+        Delete user by id.
+      parameters:
+        - $ref: '#/components/parameters/VersionParameter'
+      responses:
+        '200':
+          $ref: '#/components/responses/CreateUserResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '409':
+          $ref: '#/components/responses/ConflictErrorResponse'
+        '500':
+          $ref: '#/components/responses/InternalServerErrorResponse'
+components:
+  #-------------------------------
+  # Reusable schemas
+  #-------------------------------
+  schemas:
+    UserModel:
+      description: User model
+      required:
+        - id
+        - name
+        - email
+      type: object
+      properties:
+        id:
+          title: User id
+          type: string
+          example: 2c6e239a-f02b-d158-2833-c7f883bb5530
+          readOnly: true
+        name:
+          title: User name
+          type: string
+          example: Leanne Graham
+        email:
+          title: Mail address
+          type: string
+          example: Sincere@april.biz
+        address:
+          title: User address
+          type: object
+          properties:
+            street:
+              title: User address of street
+              type: string
+              example: Kulas Light
+            suite:
+              title: User address of suite
+              type: string
+              example: Apt. 556
+            city:
+              title: User address of city
+              type: string
+              example: Gwenborough
+            zipcode:
+              title: User address of zipcode
+              type: string
+              example: 92998-3874
+        hobbies:
+          title: User hobbies
+          type: array
+          items:
+            type: string
+            enum: 
+              - Reading books
+              - Blogging
+              - Singing
+              - Listening to music
+              - Learning new languages
+              - Shopping
+              - Dancing
+              - Drawing
+              - Traveling
+              - Cooking
+            example:
+              - Shopping
+              - Cooking
+    TimeStampsModel:
+      description: TimeStamps Model
+      required:
+        - createAt
+        - version
+      type: object
+      properties:
+        createAt:
+          title: Created datetime.
+          type: string
+          format: date-time
+          example: 2017-07-21T17:32:28Z
+        updateAt:
+          title: Updated datetime.
+          type: string
+          format: date-time
+          example: 2020-09-12T01:41:23Z
+        version:
+          title: Optimistic lock key.
+          type: integer
+          minimum: 1
+          default: 1
+    PaginationModel:
+      description: Pagination model
+      required:
+        - page
+        - total
+      type: object
+      properties:
+        page:
+          title: Page number.
+          type: integer
+          minimum: 1
+          example: 1
+        total:
+          title: Total count.
+          type: integer
+          minimum: 0
+          example: 10
+    ErrorModel:
+      description: Response Error Model.
+      required:
+        - code
+        - message
+      type: object
+      properties:
+        code:
+          title: error code
+          type: string
+          example: 500
+        message:
+          title: error message
+          type: string
+          example: Internal Server Error.
+          
+  #-------------------------------
+  # Reusable operation parameters
+  #-------------------------------
+  parameters:
+    UserIdParameter:
+      name: id
+      in: path
+      description: User id.
+      required: true
+      schema:
+        type: string
+        format: uuid4
+      example: cfe43609-4c38-d52d-44ff-66bf2bc2d5c2
+    
+    VersionParameter:
+      name: version
+      in: query
+      description: Optimistic lock key.
+      required: true
+      schema:
+        type: integer
+        default: 1
+      example: 1
+    LimitParameter:
+      name: limit
+      in: query
+      description: Limit one page.
+      schema:
+        type: integer
+        default: 20
+      example: 20
+    OffsetParameter:
+      name: offset
+      in: query
+      description: Offset page.
+      schema:
+        type: integer
+        default: 0
+      example: 100
+  #-------------------------------
+  # Reusable request body
+  #-------------------------------
+  requestBodies:
+    CreateUserRequestBody:
+      description: user data
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UserModel'
+    UpdateUserRequestBody:
+      description: user data
+      required: true
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/UserModel'
+            - properties:
+                email:
+                  readOnly: true
+  #-------------------------------
+  # Reusable responses
+  #-------------------------------
+  responses:
+    GetUsersResponse:
+      description: User lists
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/PaginationModel'
+            - required:
+              - users
+            - type: object
+            - properties:
+                users:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/UserModel'
+                  example:
+                    - id: 2c6e239a-f02b-d158-2833-c7f883bb5530
+                      name: Leanne Graham
+                      email: Sincere@april.biz
+                      address: 
+                        street: Kulas Light
+                        suite: Apt. 556
+                        city: Gwenborough
+                        zipcode: 92998-3874
+                      hobbies: 
+                        - Shopping
+                        - Cooking
+                      createAt: 2020-09-12T01:41:23.000Z
+                      update_at: 2020-09-12T01:41:23.000Z
+                      version: 2
+                    - id: 65fe854a-ca6d-2caa-1b12-e0b8d8b0c563
+                      name: Clementine Bauch
+                      email: Nathan@yesenia.net
+                      createAt: 2020-09-12T01:41:23.000Z
+                      version: 1
+                    - id: 36c1ee69-9e35-0740-990d-2b97508bd9fb
+                      name: Ervin Howell
+                      email: yamada@example.com
+                      hobbies:
+                        - Singing
+                        - Dancing
+                        - Drawing
+                      createAt: 2020-09-12T01:41:23.000Z
+                      update_at: 2020-09-12T01:41:23.000Z
+                      version: 3
+    GetUserResponse:
+      description: Got user.
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/UserModel'
+            - $ref: '#/components/schemas/TimeStampsModel'
+    CreateUserResponse:
+      description: Created user.
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/UserModel'
+            - $ref: '#/components/schemas/TimeStampsModel'
+    BadRequestResponse:
+      description: | 
+        Bad Request.
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/ErrorModel'
+            properties:
+              code:
+                example: 400
+              message:
+                example: Bad Request.
+    UnauthorizedResponse:
+      description: | 
+        Unauthorized.
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/ErrorModel'
+            properties:
+              code:
+                example: 401
+              message:
+                example: Unauthorized.
+    ForbiddenResponse:
+      description: | 
+        Forbidden.
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/ErrorModel'
+            properties:
+              code:
+                example: 403
+              message:
+                example: Forbidden.
+    NotFoundResponse:
+      description: | 
+        Not Found.
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/ErrorModel'
+            properties:
+              code:
+                example: 404
+              message:
+                example: Not Found.
+    ConflictErrorResponse:
+      description: | 
+        Conflict.
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/ErrorModel'
+            properties:
+              code:
+                example: 409
+              message:
+                example: Conflict.
+    InternalServerErrorResponse:
+      description: |-
+        Internal Server Error.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorModel'
+  #-------------------------------
+  # Reusable security
+  #-------------------------------
+  securitySchemes:
+    bearer:
+      type: http
+      scheme: bearer
+      description: JWT Token Authentication
+    apikey:
+      type: apiKey
+      name: x-api-key
+      in: header
+      description: API Key Authentication
+    basicAuth:
+      type: http
+      scheme: basic
+      description: Basic Authentication
