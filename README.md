@@ -17,3 +17,8 @@ CLI tool to parse OpenAPI and stress test each endpoint.
 
 
 </div>
+
+## Install
+```
+go install github.com/seipan/bulma@latest
+```
