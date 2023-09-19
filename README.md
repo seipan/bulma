@@ -8,7 +8,7 @@
 
 <img src="https://i.pinimg.com/736x/7d/5e/0d/7d5e0d8cea452fe918e26f1eb14ea87b.jpg" alt="eyecatch" height="200">
 
-# bluma
+# bulma
 
 CLI tool to parse OpenAPI and stress test each endpoint. 
 
