@@ -27,6 +27,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"sync"
 	"time"
 
 	"github.com/seipan/bulma/lib"
@@ -42,9 +43,14 @@ func ParseAndAttack(ctx context.Context, path string, freq int, duration time.Du
 	if err != nil {
 		return fmt.Errorf("failed to convert openapi to attacker: %w", err)
 	}
+	var wg sync.WaitGroup
 	for _, atk := range atks {
-		atk.Attack()
+		wg.Add(1)
+		go atk.Attack()
+		wg.Done()
 	}
+
+	wg.Wait()
 	return nil
 }
 
