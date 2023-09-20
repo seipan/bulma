@@ -61,5 +61,7 @@ func init() {
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
-	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	rootCmd.Flags().StringP("path", "path", "", "Path for Parsing OpenAPI")
+	rootCmd.Flags().Int32P("frequency", "frequency", 1, "stress test frequency")
+	rootCmd.Flags().DurationP("duration", "duration", 1, "stress test frequency")
 }
