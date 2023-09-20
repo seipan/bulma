@@ -25,5 +25,5 @@ go install github.com/seipan/bulma@latest
 
 ## Usage
 ```
-bulma -path=/testdata/openapi.json
+bulma --path=/testdata/openapi.json
 ```
