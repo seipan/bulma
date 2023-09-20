@@ -31,7 +31,7 @@ import (
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "bluma",
-	Short: "A brief description of your application",
+	Short: "CLI tool to parse OpenAPI and stress test each endpoint.",
 	Long: `A longer description that spans multiple lines and likely contains
 examples and usage of using your application. For example:
 
@@ -62,6 +62,6 @@ func init() {
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
 	rootCmd.Flags().StringP("path", "path", "", "Path for Parsing OpenAPI")
-	rootCmd.Flags().Int32P("frequency", "frequency", 1, "stress test frequency")
+	rootCmd.Flags().IntP("frequency", "frequency", 1, "stress test frequency")
 	rootCmd.Flags().DurationP("duration", "duration", 1, "stress test frequency")
 }

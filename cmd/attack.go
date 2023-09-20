@@ -26,17 +26,19 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"net/http"
+	"time"
 
 	"github.com/seipan/bulma/lib"
 )
 
-func ParseAndAttack(ctx context.Context, path string) error {
+func ParseAndAttack(ctx context.Context, path string, freq int, duration time.Duration) error {
 	oapi := lib.NewOpenAPI(path)
 	paths, err := oapi.Parse(ctx)
 	if err != nil {
 		return fmt.Errorf("failed to parse openapi: %w", err)
 	}
-	atks, err := ParthOpenAPItoAttacker(paths)
+	atks, err := ParthOpenAPItoAttacker(paths, freq, duration)
 	if err != nil {
 		return fmt.Errorf("failed to convert openapi to attacker: %w", err)
 	}
@@ -46,28 +48,36 @@ func ParseAndAttack(ctx context.Context, path string) error {
 	return nil
 }
 
-func ParthOpenAPItoAttacker(pathes []lib.Path) ([]lib.Attacker, error) {
+func ParthOpenAPItoAttacker(pathes []lib.Path, freq int, duration time.Duration) ([]lib.Attacker, error) {
 	var res []lib.Attacker
 	for i, path := range pathes {
+		mtd := path.Method(0)
+		bodys := mtd.Bodys()
+		body, err := createBody(bodys)
+		if err != nil {
+			return nil, err
+		}
 		atk := lib.Attacker{
 			Path:        path,
 			MethodIndex: i,
+			Body:        body,
+			Header:      http.Header{},
+			Frequency:   freq,
+			Duration:    duration,
 		}
 		res = append(res, atk)
 	}
 	return res, nil
 }
 
-func createBody(bodys []lib.Body) (string, error) {
+func createBody(bodys []lib.Body) ([]byte, error) {
 	mp := make(map[string]interface{})
 	for _, body := range bodys {
 		mp[body.Name] = body.Shema.Value.Example
 	}
 	jsonData, err := json.Marshal(mp)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
-
-	jsonString := string(jsonData)
-	return jsonString, nil
+	return jsonData, nil
 }
