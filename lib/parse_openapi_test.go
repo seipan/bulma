@@ -24,7 +24,6 @@ package lib
 
 import (
 	"context"
-	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -40,10 +39,10 @@ func TestParseOpenAPI(t *testing.T) {
 
 		assert.Equal(t, "GET", res[0].method[0].method)
 		assert.Equal(t, "POST", res[0].method[1].method)
-		if res[0].method[1].bodys != nil {
-			by := res[1].method[1].bodys[1]
-			fmt.Println(by)
-		}
+		// if res[0].method[1].bodys != nil {
+		// 	by := res[1].method[1].bodys[1]
+		// 	fmt.Println(by)
+		// }
 
 		assert.Equal(t, "/pets/{id}", res[1].Path())
 
@@ -65,13 +64,13 @@ func TestParseOpenAPIYml(t *testing.T) {
 		assert.Equal(t, "/users", res[1].Path())
 		assert.Equal(t, "GET", res[1].method[0].method)
 		assert.Equal(t, "POST", res[1].method[1].method)
-		if res[1].method[1].bodys != nil {
-			by := res[1].method[1].bodys[0]
-			b, _ := by.Shema.MarshalJSON()
-			fmt.Println(string(b))
-			fmt.Println(by.Name)
-			fmt.Println(by.Shema.Value.Example)
-		}
+		// if res[1].method[1].bodys != nil {
+		// 	by := res[1].method[1].bodys[0]
+		// 	b, _ := by.Shema.MarshalJSON()
+		// 	fmt.Println(string(b))
+		// 	fmt.Println(by.Name)
+		// 	fmt.Println(by.Shema.Value.Example)
+		// }
 
 	})
 }
