@@ -22,3 +22,8 @@ CLI tool to parse OpenAPI and stress test each endpoint.
 ```
 go install github.com/seipan/bulma@latest
 ```
+
+## Usage
+```
+bulma --path=/testdata/openapi.json
+```
