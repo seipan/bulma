@@ -79,8 +79,8 @@ func init() {
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
-	rootCmd.Flags().StringP("filepath", "path", "", "FilePath for Parsing OpenAPI")
-	rootCmd.Flags().StringP("base", "path", "", "BaseURL for stress test")
-	rootCmd.Flags().IntP("frequency", "frequency", 1, "stress test frequency")
-	rootCmd.Flags().DurationP("duration", "duration", 1, "stress test frequency")
+	rootCmd.Flags().StringP("path", "p", "", "FilePath for Parsing OpenAPI")
+	rootCmd.Flags().StringP("base", "b", "", "BaseURL for stress test")
+	rootCmd.Flags().IntP("frequency", "f", 1, "stress test frequency")
+	rootCmd.Flags().DurationP("duration", "d", 1, "stress test duration")
 }
