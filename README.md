@@ -10,7 +10,7 @@
 
 # bulma
 
-CLI tool to parse OpenAPI and stress test each endpoint. 
+ :punch: CLI tool to parse OpenAPI and stress test each endpoint. :punch:
 
 <br>
 <br>
