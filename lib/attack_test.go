@@ -23,6 +23,7 @@
 package lib
 
 import (
+	"fmt"
 	"testing"
 )
 
@@ -41,6 +42,7 @@ func TestAttack(t *testing.T) {
 			Frequency:   10,
 			Duration:    1,
 		}
-		atk.Attack()
+		metrics := atk.Attack()
+		fmt.Printf("99th percentile: %s\n", metrics.Latencies.P99)
 	})
 }

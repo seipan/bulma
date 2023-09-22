@@ -23,7 +23,6 @@
 package lib
 
 import (
-	"log"
 	"time"
 
 	vegeta "github.com/tsenart/vegeta/lib"
@@ -36,7 +35,6 @@ func (atk *Attacker) Attack() vegeta.Metrics {
 		Body:   atk.Body,
 		Header: atk.Header,
 	}
-	log.Println(target)
 	targeter := vegeta.NewStaticTargeter(target)
 	rate := vegeta.Rate{Freq: atk.Frequency, Per: time.Second}
 
