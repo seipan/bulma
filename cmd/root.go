@@ -23,6 +23,7 @@
 package cmd
 
 import (
+	"log"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -32,15 +33,28 @@ import (
 var rootCmd = &cobra.Command{
 	Use:   "bluma",
 	Short: "CLI tool to parse OpenAPI and stress test each endpoint.",
-	Long: `A longer description that spans multiple lines and likely contains
-examples and usage of using your application. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Long:  `CLI tool to parse OpenAPI and stress test each endpoint..`,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	// Run: func(cmd *cobra.Command, args []string) { },
+	Run: func(cmd *cobra.Command, args []string) {
+		path, err := cmd.Flags().GetString("path")
+		if err != nil {
+			log.Println(err)
+		}
+		freq, err := cmd.Flags().GetInt("frequency")
+		if err != nil {
+			log.Println(err)
+		}
+		duration, err := cmd.Flags().GetDuration("duration")
+		if err != nil {
+			log.Println(err)
+		}
+		err = ParseAndAttack(cmd.Context(), path, freq, duration)
+		if err != nil {
+			log.Println(err)
+		}
+	},
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.

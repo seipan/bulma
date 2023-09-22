@@ -31,6 +31,7 @@ import (
 	"time"
 
 	"github.com/seipan/bulma/lib"
+	vegeta "github.com/tsenart/vegeta/lib"
 )
 
 func ParseAndAttack(ctx context.Context, path string, freq int, duration time.Duration) error {
@@ -43,13 +44,17 @@ func ParseAndAttack(ctx context.Context, path string, freq int, duration time.Du
 	if err != nil {
 		return fmt.Errorf("failed to convert openapi to attacker: %w", err)
 	}
+	fmt.Println("--------------------------bulma attack start-------------------------------")
 	var wg sync.WaitGroup
 	for _, atk := range atks {
 		wg.Add(1)
-		go atk.Attack()
+		go func() {
+			metrics := atk.Attack()
+			outputMetrics(metrics, &atk)
+		}()
 		wg.Done()
 	}
-
+	fmt.Println("--------------------------bulma attack finish-------------------------------")
 	wg.Wait()
 	return nil
 }
@@ -86,4 +91,25 @@ func createBody(bodys []lib.Body) ([]byte, error) {
 		return nil, err
 	}
 	return jsonData, nil
+}
+
+func outputMetrics(metrics vegeta.Metrics, atk *lib.Attacker) {
+	fmt.Printf("--------------------------vegeta attack to %s--------------------------\n", atk.Path.Path())
+	mtd := atk.Path.Method(atk.MethodIndex)
+	fmt.Printf("vegeta attack to method: %s\n", mtd.Method())
+	fmt.Printf("path StatusCode: %v\n", metrics.StatusCodes)
+
+	fmt.Println()
+
+	fmt.Printf("max percentile: %s\n", metrics.Latencies.Max)
+	fmt.Printf("mean percentile: %s\n", metrics.Latencies.Mean)
+	fmt.Printf("total percentile: %s\n", metrics.Latencies.Total)
+	fmt.Printf("99th percentile: %s\n", metrics.Latencies.P99)
+
+	fmt.Println()
+
+	fmt.Printf(" earliest: %v\n", metrics.Earliest)
+	fmt.Printf(" latest: %v\n", metrics.Latest)
+
+	fmt.Println("-----------------------------------------------------------------------")
 }
