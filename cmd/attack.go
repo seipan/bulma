@@ -34,13 +34,13 @@ import (
 	vegeta "github.com/tsenart/vegeta/lib"
 )
 
-func ParseAndAttack(ctx context.Context, path string, freq int, duration time.Duration) error {
+func ParseAndAttack(ctx context.Context, beseEndpoint string, path string, freq int, duration time.Duration) error {
 	oapi := lib.NewOpenAPI(path)
 	paths, err := oapi.Parse(ctx)
 	if err != nil {
 		return fmt.Errorf("failed to parse openapi: %w", err)
 	}
-	atks, err := ParthOpenAPItoAttacker(paths, freq, duration)
+	atks, err := ParthOpenAPItoAttacker(paths, beseEndpoint, freq, duration)
 	if err != nil {
 		return fmt.Errorf("failed to convert openapi to attacker: %w", err)
 	}
@@ -59,7 +59,7 @@ func ParseAndAttack(ctx context.Context, path string, freq int, duration time.Du
 	return nil
 }
 
-func ParthOpenAPItoAttacker(pathes []lib.Path, freq int, duration time.Duration) ([]lib.Attacker, error) {
+func ParthOpenAPItoAttacker(pathes []lib.Path, beseEndpoint string, freq int, duration time.Duration) ([]lib.Attacker, error) {
 	var res []lib.Attacker
 	for i, path := range pathes {
 		mtd := path.Method(0)
@@ -68,13 +68,16 @@ func ParthOpenAPItoAttacker(pathes []lib.Path, freq int, duration time.Duration)
 		if err != nil {
 			return nil, err
 		}
+		path.SetPath(beseEndpoint + path.Path())
 		atk := lib.Attacker{
 			Path:        path,
 			MethodIndex: i,
 			Body:        body,
-			Header:      http.Header{},
-			Frequency:   freq,
-			Duration:    duration,
+			Header: http.Header{
+				"Content-Type": []string{"application/json"},
+			},
+			Frequency: freq,
+			Duration:  duration,
 		}
 		res = append(res, atk)
 	}

@@ -42,6 +42,10 @@ var rootCmd = &cobra.Command{
 		if err != nil {
 			log.Println(err)
 		}
+		base, err := cmd.Flags().GetString("base")
+		if err != nil {
+			log.Println(err)
+		}
 		freq, err := cmd.Flags().GetInt("frequency")
 		if err != nil {
 			log.Println(err)
@@ -50,7 +54,7 @@ var rootCmd = &cobra.Command{
 		if err != nil {
 			log.Println(err)
 		}
-		err = ParseAndAttack(cmd.Context(), path, freq, duration)
+		err = ParseAndAttack(cmd.Context(), base, path, freq, duration)
 		if err != nil {
 			log.Println(err)
 		}
@@ -75,7 +79,8 @@ func init() {
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
-	rootCmd.Flags().StringP("path", "path", "", "Path for Parsing OpenAPI")
+	rootCmd.Flags().StringP("filepath", "path", "", "FilePath for Parsing OpenAPI")
+	rootCmd.Flags().StringP("base", "path", "", "BaseURL for stress test")
 	rootCmd.Flags().IntP("frequency", "frequency", 1, "stress test frequency")
 	rootCmd.Flags().DurationP("duration", "duration", 1, "stress test frequency")
 }
