@@ -73,3 +73,7 @@ total percentile: 333.6204ms
 -----------------------------------------------------------------------
 --------------------------bulma attack finish-------------------------------
 ```
+
+## License
+Code licensed under 
+[the MIT License](https://github.com/seipan/bulma/blob/main/LICENSE).
