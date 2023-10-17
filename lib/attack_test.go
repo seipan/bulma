@@ -44,5 +44,7 @@ func TestAttack(t *testing.T) {
 		}
 		metrics := atk.Attack()
 		fmt.Printf("99th percentile: %s\n", metrics.Latencies.P99)
+		fmt.Println(metrics.Latencies.Max)
+		fmt.Println(metrics.Latencies.Mean)
 	})
 }
