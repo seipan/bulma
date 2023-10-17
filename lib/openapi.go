@@ -52,6 +52,10 @@ type Path struct {
 	method []Method
 }
 
+func (p *Path) SetPath(path string) {
+	p.path = path
+}
+
 func (p *Path) Path() string {
 	return p.path
 }

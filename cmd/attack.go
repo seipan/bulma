@@ -27,34 +27,32 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"sync"
 	"time"
 
 	"github.com/seipan/bulma/lib"
+	vegeta "github.com/tsenart/vegeta/lib"
 )
 
-func ParseAndAttack(ctx context.Context, path string, freq int, duration time.Duration) error {
+func ParseAndAttack(ctx context.Context, beseEndpoint string, path string, freq int, duration time.Duration) error {
 	oapi := lib.NewOpenAPI(path)
 	paths, err := oapi.Parse(ctx)
 	if err != nil {
 		return fmt.Errorf("failed to parse openapi: %w", err)
 	}
-	atks, err := ParthOpenAPItoAttacker(paths, freq, duration)
+	atks, err := ParthOpenAPItoAttacker(paths, beseEndpoint, freq, duration)
 	if err != nil {
 		return fmt.Errorf("failed to convert openapi to attacker: %w", err)
 	}
-	var wg sync.WaitGroup
+	fmt.Println("--------------------------bulma attack start-------------------------------")
 	for _, atk := range atks {
-		wg.Add(1)
-		go atk.Attack()
-		wg.Done()
+		metrics := atk.Attack()
+		outputMetrics(metrics, &atk)
 	}
-
-	wg.Wait()
+	fmt.Println("--------------------------bulma attack finish-------------------------------")
 	return nil
 }
 
-func ParthOpenAPItoAttacker(pathes []lib.Path, freq int, duration time.Duration) ([]lib.Attacker, error) {
+func ParthOpenAPItoAttacker(pathes []lib.Path, beseEndpoint string, freq int, duration time.Duration) ([]lib.Attacker, error) {
 	var res []lib.Attacker
 	for i, path := range pathes {
 		mtd := path.Method(0)
@@ -63,13 +61,16 @@ func ParthOpenAPItoAttacker(pathes []lib.Path, freq int, duration time.Duration)
 		if err != nil {
 			return nil, err
 		}
+		path.SetPath(beseEndpoint + path.Path())
 		atk := lib.Attacker{
 			Path:        path,
 			MethodIndex: i,
 			Body:        body,
-			Header:      http.Header{},
-			Frequency:   freq,
-			Duration:    duration,
+			Header: http.Header{
+				"Content-Type": []string{"application/json"},
+			},
+			Frequency: freq,
+			Duration:  duration,
 		}
 		res = append(res, atk)
 	}
@@ -86,4 +87,25 @@ func createBody(bodys []lib.Body) ([]byte, error) {
 		return nil, err
 	}
 	return jsonData, nil
+}
+
+func outputMetrics(metrics vegeta.Metrics, atk *lib.Attacker) {
+	fmt.Printf("--------------------------vegeta attack to %s--------------------------\n", atk.Path.Path())
+	mtd := atk.Path.Method(atk.MethodIndex)
+	fmt.Printf("vegeta attack to method: %s\n", mtd.Method())
+	fmt.Printf("path StatusCode: %v\n", metrics.StatusCodes)
+
+	fmt.Println()
+
+	fmt.Printf("max percentile: %s\n", metrics.Latencies.Max)
+	fmt.Printf("mean percentile: %s\n", metrics.Latencies.Mean)
+	fmt.Printf("total percentile: %s\n", metrics.Latencies.Total)
+	fmt.Printf("99th percentile: %s\n", metrics.Latencies.P99)
+
+	fmt.Println()
+
+	fmt.Printf(" earliest: %v\n", metrics.Earliest)
+	fmt.Printf(" latest: %v\n", metrics.Latest)
+
+	fmt.Println("-----------------------------------------------------------------------")
 }

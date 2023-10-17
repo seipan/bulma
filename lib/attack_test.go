@@ -39,12 +39,17 @@ func TestAttack(t *testing.T) {
 				},
 			},
 			MethodIndex: 0,
-			Frequency:   10,
-			Duration:    1,
+			Frequency:   110,
+			Duration:    2,
 		}
 		metrics := atk.Attack()
 		fmt.Printf("99th percentile: %s\n", metrics.Latencies.P99)
 		fmt.Println(metrics.Latencies.Max)
 		fmt.Println(metrics.Latencies.Mean)
+		fmt.Printf("max percentile: %s\n", metrics.Latencies.Max)
+		fmt.Printf("mean percentile: %s\n", metrics.Latencies.Mean)
+		fmt.Printf("total percentile: %s\n", metrics.Latencies.Total)
+
+		fmt.Printf("total percentile: %v\n", metrics.StatusCodes)
 	})
 }
