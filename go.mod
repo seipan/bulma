@@ -3,7 +3,7 @@ module github.com/seipan/bulma
 go 1.21
 
 require (
-	github.com/getkin/kin-openapi v0.121.0
+	github.com/getkin/kin-openapi v0.122.0
 	github.com/spf13/cobra v1.8.0
 	github.com/stretchr/testify v1.8.4
 	github.com/tsenart/vegeta v12.7.0+incompatible
