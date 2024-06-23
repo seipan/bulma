@@ -26,6 +26,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/seipan/bulma/lib"
 	"github.com/spf13/cobra"
 )
 
@@ -54,7 +55,7 @@ var rootCmd = &cobra.Command{
 		if err != nil {
 			log.Println(err)
 		}
-		err = ParseAndAttack(cmd.Context(), ignore, base, path, freq, duration)
+		err = lib.ParseAndAttack(cmd.Context(), ignore, base, path, freq, duration)
 		if err != nil {
 			log.Println(err)
 		}
