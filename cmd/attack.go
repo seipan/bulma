@@ -33,7 +33,7 @@ import (
 	vegeta "github.com/tsenart/vegeta/lib"
 )
 
-func ParseAndAttack(ctx context.Context, beseEndpoint string, path string, freq int, duration time.Duration) error {
+func ParseAndAttack(ctx context.Context, ignore []string, beseEndpoint string, path string, freq int, duration time.Duration) error {
 	oapi := lib.NewOpenAPI(path)
 	paths, err := oapi.Parse(ctx)
 	if err != nil {

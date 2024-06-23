@@ -50,7 +50,11 @@ var rootCmd = &cobra.Command{
 		if err != nil {
 			log.Println(err)
 		}
-		err = ParseAndAttack(cmd.Context(), base, path, freq, duration)
+		ignore, err := cmd.Flags().GetStringArray("ignore")
+		if err != nil {
+			log.Println(err)
+		}
+		err = ParseAndAttack(cmd.Context(), ignore, base, path, freq, duration)
 		if err != nil {
 			log.Println(err)
 		}
@@ -67,6 +71,7 @@ func Execute() {
 func init() {
 	rootCmd.Flags().StringP("path", "p", "", "FilePath for Parsing OpenAPI")
 	rootCmd.Flags().StringP("base", "b", "", "BaseURL for stress test")
+	rootCmd.Flags().StringArrayP("ignore", "i", []string{}, "Ignore Paths for stress test")
 	rootCmd.Flags().IntP("frequency", "f", 1, "stress test frequency")
 	rootCmd.Flags().DurationP("duration", "d", 1, "stress test duration")
 }
