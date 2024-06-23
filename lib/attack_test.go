@@ -21,33 +21,3 @@
 // SOFTWARE.
 
 package lib
-
-import (
-	"fmt"
-	"testing"
-)
-
-func TestAttack(t *testing.T) {
-	t.Run("Attack", func(t *testing.T) {
-		atk := Attacker{
-			Path: Path{
-				path: "http://localhost:8080/health",
-				method: []Method{
-					{
-						method: "GET",
-					},
-				},
-			},
-			MethodIndex: 0,
-			Frequency:   110,
-			Duration:    2,
-		}
-		metrics := atk.Attack()
-		fmt.Printf("99th percentile: %s\n", metrics.Latencies.P99)
-		fmt.Printf("max percentile: %s\n", metrics.Latencies.Max)
-		fmt.Printf("mean percentile: %s\n", metrics.Latencies.Mean)
-		fmt.Printf("total percentile: %s\n", metrics.Latencies.Total)
-
-		fmt.Printf("status code: %v\n", metrics.StatusCodes)
-	})
-}
