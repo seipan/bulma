@@ -17,8 +17,8 @@ func (i *Ignore) Add(path string) {
 	i.Paths = append(i.Paths, path)
 }
 
-func NewIgnore(paths []string) *Ignore {
-	return &Ignore{
+func NewIgnore(paths []string) Ignore {
+	return Ignore{
 		Paths: paths,
 	}
 }
