@@ -33,13 +33,16 @@ import (
 	vegeta "github.com/tsenart/vegeta/lib"
 )
 
-func ParseAndAttack(ctx context.Context, beseEndpoint string, path string, freq int, duration time.Duration) error {
+func ParseAndAttack(ctx context.Context, ignore []string, beseEndpoint string, path string, freq int, duration time.Duration) error {
 	oapi := lib.NewOpenAPI(path)
 	paths, err := oapi.Parse(ctx)
 	if err != nil {
 		return fmt.Errorf("failed to parse openapi: %w", err)
 	}
-	atks, err := ParthOpenAPItoAttacker(paths, beseEndpoint, freq, duration)
+
+	ignores := lib.NewIgnore(ignore)
+
+	atks, err := ParthOpenAPItoAttacker(paths, ignores, beseEndpoint, freq, duration)
 	if err != nil {
 		return fmt.Errorf("failed to convert openapi to attacker: %w", err)
 	}
@@ -52,9 +55,13 @@ func ParseAndAttack(ctx context.Context, beseEndpoint string, path string, freq 
 	return nil
 }
 
-func ParthOpenAPItoAttacker(pathes []lib.Path, beseEndpoint string, freq int, duration time.Duration) ([]lib.Attacker, error) {
+func ParthOpenAPItoAttacker(pathes []lib.Path, ignores lib.Ignore, beseEndpoint string, freq int, duration time.Duration) ([]lib.Attacker, error) {
 	var res []lib.Attacker
 	for i, path := range pathes {
+		if ignores.IsIgnored(path.Path()) {
+			continue
+		}
+
 		mtd := path.Method(0)
 		bodys := mtd.Bodys()
 		body, err := createBody(bodys)
