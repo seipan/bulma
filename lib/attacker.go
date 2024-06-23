@@ -25,6 +25,8 @@ package lib
 import (
 	"net/http"
 	"time"
+
+	vegeta "github.com/tsenart/vegeta/lib"
 )
 
 type Attacker struct {
@@ -34,4 +36,24 @@ type Attacker struct {
 	Header      http.Header
 	Frequency   int
 	Duration    time.Duration
+}
+
+func (atk *Attacker) Attack() vegeta.Metrics {
+	target := vegeta.Target{
+		Method: atk.Path.method[atk.MethodIndex].method,
+		URL:    atk.Path.path,
+		Body:   atk.Body,
+		Header: atk.Header,
+	}
+	targeter := vegeta.NewStaticTargeter(target)
+	rate := vegeta.Rate{Freq: atk.Frequency, Per: time.Second}
+
+	attacker := vegeta.NewAttacker()
+	var metrics vegeta.Metrics
+	for res := range attacker.Attack(targeter, rate, atk.Duration, "Vegeta Load Testing") {
+		metrics.Add(res)
+	}
+	metrics.Close()
+
+	return metrics
 }
