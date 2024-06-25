@@ -23,7 +23,7 @@
 package cmd
 
 import (
-	"log"
+	"fmt"
 	"os"
 
 	"github.com/seipan/bulma/lib"
@@ -34,31 +34,32 @@ var rootCmd = &cobra.Command{
 	Use:   "bluma",
 	Short: "CLI tool to parse OpenAPI and stress test each endpoint.",
 	Long:  `CLI tool to parse OpenAPI and stress test each endpoint..`,
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		path, err := cmd.Flags().GetString("path")
 		if err != nil {
-			log.Println(err)
+			return fmt.Errorf("failed to get path: %w", err)
 		}
 		base, err := cmd.Flags().GetString("base")
 		if err != nil {
-			log.Println(err)
+			return fmt.Errorf("failed to get base: %w", err)
 		}
 		freq, err := cmd.Flags().GetInt("frequency")
 		if err != nil {
-			log.Println(err)
+			return fmt.Errorf("failed to get frequency: %w", err)
 		}
 		duration, err := cmd.Flags().GetDuration("duration")
 		if err != nil {
-			log.Println(err)
+			return fmt.Errorf("failed to get duration: %w", err)
 		}
 		ignore, err := cmd.Flags().GetStringArray("ignore")
 		if err != nil {
-			log.Println(err)
+			return fmt.Errorf("failed to get ignore paths: %w", err)
 		}
 		err = lib.ParseAndAttack(cmd.Context(), ignore, base, path, freq, duration)
 		if err != nil {
-			log.Println(err)
+			return fmt.Errorf("failed to parse and attack: %w", err)
 		}
+		return nil
 	},
 }
 
