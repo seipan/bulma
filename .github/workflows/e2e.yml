@@ -22,6 +22,6 @@ jobs:
         go-version: ${{ matrix.go-version }}
 
     - name: Setup Server
-      run: cd testdata/ciserver && go run main.go
+      run: cd testdata/ciserver && go run main.go &
 
     
